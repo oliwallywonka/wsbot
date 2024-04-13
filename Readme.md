@@ -1,6 +1,6 @@
 
 
-# Running whitout docker
+# Running without docker
 
 ## Prerequisites
 Before you begin, ensure you have the following installed:

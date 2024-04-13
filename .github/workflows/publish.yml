@@ -1,0 +1,49 @@
+name: publish
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  create-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.TOCKEN_CD }}
+        
+      - name: Build Docker image
+        run: |
+          docker build . --tag ghcr.io/oliwallywonka/wsbot:latest
+          docker push ghcr.io/oliwallywonka/wsbot:latest
+  deploy:
+    needs: create-docker-image
+    runs-on: ubuntu latest
+    steps:
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: SSH into Server
+        run: |
+          sshpass -p ${{secrets.DON_WEB_PASSWORD}} ssh -o StrictHostKeyChecking=no ${{secrets.DON_WEB_SERVER}} << EOF
+            cd /root/wsbot/
+            docker login ghcr.io -u oliwallywonka -p ${{secrets.TOKEN_CD}}
+            docker pull ghcr.io/oliwallywonka/wsbot:latest
+            docker stop wsbot && docker rm wsbot
+            docker run -d \
+              --name wsbot \
+              -p 3002:3002 \
+              -v $(pwd)/bot_sessions:/app/bot_sessions \
+              -w /app \
+              --restart always \
+              --env-dile .env \
+              ghcr.io/oliwallywonka/wsbot:latest
+            EOF

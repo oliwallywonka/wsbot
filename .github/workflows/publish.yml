@@ -16,14 +16,14 @@ jobs:
       - name: Echo actor and token
         run: |
           echo ${{ github.actor }} 
-          echo ${{ secrets.TOCKEN_CD }}
+          echo ${{ secrets.TOKEN_CD }}
       
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.TOCKEN_CD }}
+          password: ${{ secrets.TOKEN_CD }}
         
       - name: Build Docker image
         run: |

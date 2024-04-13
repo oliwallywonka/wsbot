@@ -19,3 +19,9 @@ Before you begin, ensure you have the following installed:
 
 ## step 4: Excecute
 - Execute the compiled proyect using ```npm run start```
+
+
+# Connect your whatssapp to the bot
+
+Once the proyect is running you can access to a QR to link this bot to your Whatsapp.
+- You can access it going to this url in your local host [http://localhost:3002/qr](http://localhost:3002/qr)

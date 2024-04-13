@@ -1,6 +1,6 @@
 
 
-# Runnin whitout docker
+# Running whitout docker
 
 ## Prerequisites
 Before you begin, ensure you have the following installed:

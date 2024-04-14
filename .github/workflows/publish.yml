@@ -51,4 +51,4 @@ jobs:
               --restart always \
               --env-dile .env \
               ghcr.io/oliwallywonka/wsbot:latest
-            EOF
+          EOF

@@ -49,6 +49,5 @@ jobs:
               -v $(pwd)/bot_sessions:/app/bot_sessions \
               -w /app \
               --restart always \
-              --env-file .env \
               ghcr.io/oliwallywonka/wsbot:latest
           EOF

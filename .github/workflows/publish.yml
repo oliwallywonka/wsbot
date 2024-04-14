@@ -45,7 +45,7 @@ jobs:
             docker stop wsbot && docker rm wsbot
             docker run -d \
               --name wsbot \
-              -p 3002:3002 \
+              -p 3002:3000 \
               -v $(pwd)/bot_sessions:/app/bot_sessions \
               -w /app \
               --restart always \

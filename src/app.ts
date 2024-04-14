@@ -10,7 +10,12 @@ import { BotContext } from "@bot-whatsapp/bot/dist/types";
 import { BaileysProvider, handleCtx } from "@bot-whatsapp/provider-baileys";
 
 import { PORT } from "./config/config";
-import { getCardIDFlow, invalidFlow, menuFlow } from "./flows";
+import {
+  getCardIDFlow,
+  invalidFlow,
+  menuFlow,
+  sendDocumentFlow,
+} from "./flows";
 
 const main = async () => {
   const provider = createProvider(BaileysProvider);
@@ -32,7 +37,7 @@ const main = async () => {
   });
 
   await createBot({
-    flow: createFlow([menuFlow, invalidFlow, getCardIDFlow]),
+    flow: createFlow([menuFlow, invalidFlow, getCardIDFlow, sendDocumentFlow]),
     database: new MemoryDB(),
     provider: provider,
   });

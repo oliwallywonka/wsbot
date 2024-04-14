@@ -1,7 +1,5 @@
 import { EVENTS, addKeyword } from "@bot-whatsapp/bot";
-import { getCardIDFlow } from "./getCardIDFlow";
-import { invalidFlow } from "./invalidFlow";
-import path from "path";
+import { getCardIDFlow, invalidFlow, sendDocumentFlow } from ".";
 
 const menuAnswer = `
 📋 *Documentos Personales* 📋
@@ -13,12 +11,6 @@ const menuAnswer = `
 
 Por favor, selecciona el *número* correspondiente al documento que necesitas ¡Estamos aquí para ayudarte con tus trámites! 📝🔍
 `;
-
-const sendDocumentFlow = addKeyword(EVENTS.ACTION)
-  .addAnswer("⏰ Enviando documento espere....", {
-    media: path.resolve(__dirname, "../../bot.qr.png"),
-  })
-  .addAnswer("Imagen enviada.");
 
 const answerActions = {
   "1": getCardIDFlow,

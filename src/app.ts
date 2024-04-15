@@ -10,12 +10,11 @@ import { BotContext } from "@bot-whatsapp/bot/dist/types";
 import { BaileysProvider, handleCtx } from "@bot-whatsapp/provider-baileys";
 
 import { PORT } from "./config/config";
-import {
-  getCardIDFlow,
-  invalidFlow,
-  menuFlow,
-  sendDocumentFlow,
-} from "./flows";
+import { getCardIDFlow } from "./flows/getCardIDFlow";
+import { invalidFlow } from "./flows/invalidFlow";
+import { menuFlow } from "./flows/menu.flow";
+import { sendDocumentFlow } from "./flows/sendDocumentFlow";
+
 
 const main = async () => {
   const provider = createProvider(BaileysProvider);

@@ -1,5 +1,7 @@
 import { EVENTS, addKeyword } from "@bot-whatsapp/bot";
-import { getCardIDFlow, invalidFlow, sendDocumentFlow } from ".";
+import { getCardIDFlow } from "./getCardIDFlow";
+import { invalidFlow } from "./invalidFlow";
+import { sendDocumentFlow } from "./sendDocumentFlow";
 
 const menuAnswer = `
 📋 *Documentos Personales* 📋
@@ -23,7 +25,7 @@ export const menuFlow = addKeyword([EVENTS.WELCOME, "menu"]).addAnswer(
   menuAnswer,
   { capture: true },
   async (ctx, { gotoFlow }) => {
-    console.log(ctx.body);
+    console.log(ctx);
     const flow =
       answerActions[ctx.body as keyof typeof answerActions] || invalidFlow;
     gotoFlow(flow);

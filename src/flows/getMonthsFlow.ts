@@ -20,7 +20,7 @@ function getLastMonths(monthsQuantity: number = 3) {
   for (let i = 0; i < monthsQuantity; i++) {
     const today = new Date();
     monthsList.push(today);
-    today.setMonth(today.getMonth() - (i));
+    today.setMonth(today.getMonth() - i);
   }
   return monthsList;
 }
@@ -37,18 +37,15 @@ export const getMothsFlow = addKeyword([EVENTS.ACTION]).addAnswer(
   monthsAnswer,
   { capture: true },
   async (ctx, { flowDynamic }) => {
-    const date =
-      monthDicctionary(getLastMonths())[
-        ctx.body as keyof typeof monthDicctionary
-      ] || new Date();
-
+    const monthsDicc = monthDicctionary(getLastMonths());
+    const date = monthsDicc.get(ctx.body) || new Date();
     const userPhone = ctx.from;
 
     const phoneSanitizied = userPhone.slice(3, userPhone.length - 1);
 
     // TODO : Verify month number is getting a wrong number in some cases.
-    const selectedMonth = new Date(date).getMonth() + 1;
-    const selectedYear = new Date(date).getFullYear();
+    const selectedMonth = date.getMonth() + 1;
+    const selectedYear = date.getFullYear();
     const dateParsed = `${selectedYear}-${selectedMonth}`;
 
     console.log(phoneSanitizied, dateParsed);

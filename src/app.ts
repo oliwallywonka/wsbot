@@ -12,8 +12,9 @@ import { BaileysProvider, handleCtx } from "@bot-whatsapp/provider-baileys";
 import { PORT } from "./config/config";
 import { getCardIDFlow } from "./flows/getCardIDFlow";
 import { invalidFlow } from "./flows/invalidFlow";
-import { getMothsFlow, menuFlow } from "./flows/menu.flow";
+import { menuFlow } from "./flows/menu.flow";
 import { sendDocumentFlow } from "./flows/sendDocumentFlow";
+import { getMothsFlow } from "./flows/getMonthsFlow";
 
 
 const main = async () => {

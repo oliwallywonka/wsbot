@@ -1,5 +1,7 @@
 import { EVENTS, addKeyword } from "@bot-whatsapp/bot";
-
+import axios from "axios";
+import fs from "fs/promises";
+import { join } from "path";
 function getStringDate(date: Date): string {
   return date.toLocaleDateString("es", {
     month: "long",
@@ -15,46 +17,85 @@ function monthDicctionary(dates: Date[]) {
   return map;
 }
 
-function getLastMonths(monthsQuantity: number = 3) {
-  const monthsList: Date[] = [];
-  for (let i = 0; i < monthsQuantity; i++) {
-    const today = new Date();
-    monthsList.push(today);
-    today.setMonth(today.getMonth() - i);
+function getLastMonths() {
+  const today = new Date(); // Obtenemos la fecha actual
+  const currentMonth = today.getMonth()-1; // Obtenemos el mes actual
+  const currentDate = today.getDate(); // Obtenemos el día del mes actual
+
+  const lastThreeMonths = [];
+  let startMonthIndex = 0;
+
+  // Si estamos en los primeros 10 días del mes actual, ajustamos el inicio del cálculo de los meses
+  if (currentDate <= 10) {
+    startMonthIndex = 1; // Comenzamos desde el mes anterior al actual
   }
-  return monthsList;
+
+  // Añadimos los últimos tres meses completos
+  for (let i = startMonthIndex; i < startMonthIndex + 3; i++) {
+    const month = new Date(today.getFullYear(), currentMonth - i, 1);
+    lastThreeMonths.push(month);
+  }
+
+  return lastThreeMonths; // Invertimos el orden para mostrar del más antiguo al más reciente
 }
+
+
+
+console.log(getLastMonths());
+
 
 const monthsAnswer = `
 📋 *Meses disponibles* 📋
 
-   ${getLastMonths().map(
-     (month, index) => `${index + 1}: *${getStringDate(month)}* \n`
-   )}
+${getLastMonths().map((month, index) => `${index + 1}. ${getStringDate(month)}\n`).join('')}
 `;
+
 
 export const getMothsFlow = addKeyword([EVENTS.ACTION]).addAnswer(
   monthsAnswer,
-  { capture: true },
-  async (ctx, { flowDynamic }) => {
-    const monthsDicc = monthDicctionary(getLastMonths());
-    const date = monthsDicc.get(ctx.body) || new Date();
-    const userPhone = ctx.from;
 
-    const phoneSanitizied = userPhone.slice(3, userPhone.length - 1);
+).addAction({capture:true},async(ctx,{flowDynamic})=> {const monthsDicc = monthDicctionary(getLastMonths());
+  const date = monthsDicc.get(ctx.body) || new Date();
+  
+  
 
-    // TODO : Verify month number is getting a wrong number in some cases.
-    const selectedMonth = date.getMonth() + 1;
-    const selectedYear = date.getFullYear();
-    const dateParsed = `${selectedYear}-${selectedMonth}`;
+  const userPhone = ctx.from;
 
-    console.log(phoneSanitizied, dateParsed);
+  const phoneSanitizied = userPhone.slice(3, userPhone.length);
 
+  // TODO : Verify month number is getting a wrong number in some cases.
+  const selectedMonth = ('0' + (date.getMonth() + 1)).slice(-2);
+  const dateTenDaysLater = new Date(selectedMonth);
+  dateTenDaysLater.setDate(dateTenDaysLater.getDate() + 50);
+  const selectedYear = date.getFullYear();
+  const dateParsed = `${selectedYear}${selectedMonth}`;
+
+  console.log(phoneSanitizied, dateParsed);
+  try {
+    const doc = await axios
+      .get(`http://177.222.106.83:86/api/boleta?numero=${phoneSanitizied}&fecha=${dateParsed}`,{
+        responseType: 'arraybuffer',
+        headers: {
+            'Accept': 'application/pdf'
+        }
+    })
+      .then((res) => res.data);
+
+      
+    await fs.writeFile(`${getStringDate(date)}.pdf`, doc);
+    const url = join(process.cwd(),`${getStringDate(date)}.pdf` ).replace(/\\/g, "/");
     await flowDynamic([
       {
         body: "😜",
-        media: `http://177.222.106.83:86/api/boleta?numero=${phoneSanitizied}&fecha=${dateParsed}`,
+        media: url,
+      },
+    ]);
+  } catch (error) {
+    console.log('error');
+    await flowDynamic([
+      {
+        body: "Tu numero no se encuentra registrado. Por favor, comunícate con Recursos Humanos (RRHH).",
       },
     ]);
   }
-);
+});

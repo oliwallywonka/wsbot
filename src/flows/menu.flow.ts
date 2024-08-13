@@ -5,22 +5,23 @@ import { sendDocumentFlow } from "./sendDocumentFlow";
 import { getMothsFlow } from "./getMonthsFlow";
 
 const menuAnswer = `
-📋 *Documentos Personales* 📋
+😊 *¡Gracias por comunicarte con RRHH!* 😊
 
-1. *Informacion usuario* 🆔
-2. *Imagen Pasaporte* 🛂 📝
-3. *Obtener meses* 🚗 📄
-4. *Certificado de Nacimiento* 🏥
+📄 *Solicitud de Boletas de Pago* 📄
 
-Por favor, selecciona el *número* correspondiente al documento que necesitas ¡Estamos aquí para ayudarte con tus trámites! 📝🔍
+Para solicitar tu boleta de pago, por favor escribe el *número 1*.
+
+*1. Boleta de Pago 📑*
+
+Luego, selecciona el mes de la boleta de pago que necesites. 🗓️
+
 `;
 
 const answerActions = {
-  "1": getCardIDFlow,
-  "2": sendDocumentFlow,
-  "3": getMothsFlow,
-  "4": getCardIDFlow,
+  "1": getMothsFlow,
+ 
 };
+
 
 export const menuFlow = addKeyword([EVENTS.WELCOME, "menu"])
   .addAnswer(

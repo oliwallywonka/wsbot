@@ -3,6 +3,8 @@
 node_modules
 dist
 
+boleta.pdf
+
 *_sessions
 baileys.log
 bot.qr.png

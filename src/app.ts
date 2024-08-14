@@ -28,22 +28,22 @@ const main = async () => {
   provider.http?.server.post(
     "sendMessages",
     handleCtx(async (bot, req, res) => {
-      const { message }: { message: string | undefined } = req.body;
+      const { messages }: { messages: string[] | undefined } = req.body;
       try {
         if (wsQueue.getActiveCount() > 0) {
           return res.end("Ya existen mensajes en cola.");
         }
         await wSTask.getData();
-
         for (const data of wSTask.data) {
           wsQueue.add(async () => {
-            const d = {
-              ...data,
-              message: message?.replace("{{link}}", data.linkURL) || "",
-            };
-            await new Promise((resolve) => setTimeout(resolve, 4000));
-            await bot.sendMessage(data.phone, d.message, {});
-            console.log(data.phone);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            for (const message of messages || []) {
+              await bot.sendMessage(
+                data.phone,
+                message.replace("{{link}}", data.linkURL),
+                {}
+              );
+            }
             return;
           });
         }

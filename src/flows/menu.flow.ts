@@ -23,14 +23,21 @@ const answerActions = {
 };
 
 
-export const menuFlow = addKeyword([EVENTS.WELCOME, "menu"])
-  .addAnswer(
-  menuAnswer,
-  { capture: true },
-  async (ctx, { gotoFlow }) => {
+export const sendMenuImage = addKeyword([EVENTS.WELCOME, "menu"])// El asterisco indica que puede ser cualquier palabra clave
+  .addAnswer(menuAnswer, {
+    media: 'http://177.222.106.83:86/img/boot.png', // URL de la imagen a enviar
+  });
+
+export const captureMenuResponse = addKeyword(["captureResponse"])
+  .addAnswer("Por favor, selecciona una opción del menú:", { capture: true }, async (ctx, { gotoFlow }) => {
     const flow =
       answerActions[ctx.body as keyof typeof answerActions] || invalidFlow;
     gotoFlow(flow);
-  }
-);
+  });
+
+export const menuFlow = sendMenuImage.addAnswer("Por favor, selecciona una opción del menú:", { capture: true }, (ctx, { gotoFlow }) => {
+  const flow =
+    answerActions[ctx.body as keyof typeof answerActions] || invalidFlow;
+  gotoFlow(flow);
+});
 

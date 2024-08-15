@@ -18,25 +18,21 @@ function monthDicctionary(dates: Date[]) {
 }
 
 function getLastMonths() {
-  const today = new Date(); // Obtenemos la fecha actual
-  const currentMonth = today.getMonth()-1; // Obtenemos el mes actual
-  const currentDate = today.getDate(); // Obtenemos el día del mes actual
-
-  const lastThreeMonths = [];
-  let startMonthIndex = 0;
-
-  // Si estamos en los primeros 10 días del mes actual, ajustamos el inicio del cálculo de los meses
-  if (currentDate <= 10) {
-    startMonthIndex = 1; // Comenzamos desde el mes anterior al actual
-  }
-
-  // Añadimos los últimos tres meses completos
-  for (let i = startMonthIndex; i < startMonthIndex + 3; i++) {
-    const month = new Date(today.getFullYear(), currentMonth - i, 1);
-    lastThreeMonths.push(month);
-  }
-
-  return lastThreeMonths; // Invertimos el orden para mostrar del más antiguo al más reciente
+    const today = new Date(); // Obtenemos la fecha actual
+    const currentMonth = today.getMonth() - 1; 
+    const currentDate = today.getDate(); 
+    const lastThreeMonths = [];
+    let startMonthIndex = 0;
+    
+    if (currentDate <= 2) {
+        startMonthIndex = 1; 
+    }
+    // Añadimos los últimos tres meses completos
+    for (let i = startMonthIndex; i < startMonthIndex + 7; i++) {
+        const month = new Date(today.getFullYear(), currentMonth - i, 1);
+        lastThreeMonths.push(month);
+    }
+    return lastThreeMonths;
 }
 
 
@@ -72,6 +68,12 @@ export const getMothsFlow = addKeyword([EVENTS.ACTION]).addAnswer(
 
   console.log(phoneSanitizied, dateParsed);
   try {
+    await flowDynamic([
+      {
+        body: "📥 Enviando documento...",
+      },
+    ]);
+    
     const doc = await axios
       .get(`http://177.222.106.83:86/api/boleta?numero=${phoneSanitizied}&fecha=${dateParsed}`,{
         responseType: 'arraybuffer',

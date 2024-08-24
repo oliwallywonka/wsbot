@@ -1,7 +1,6 @@
-import { EVENTS, addKeyword } from "@bot-whatsapp/bot";
-import { getCardIDFlow } from "./getCardIDFlow";
+import { addKeyword, EVENTS } from "@builderbot/bot";
+
 import { invalidFlow } from "./invalidFlow";
-import { sendDocumentFlow } from "./sendDocumentFlow";
 import { getMothsFlow } from "./getMonthsFlow";
 
 const menuAnswer = `

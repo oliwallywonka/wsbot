@@ -3,6 +3,8 @@
 node_modules
 dist
 
+tmp
+
 boleta.pdf
 
 *_sessions

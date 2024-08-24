@@ -1,4 +1,4 @@
-import { EVENTS, addKeyword } from "@bot-whatsapp/bot";
+import { addKeyword, EVENTS } from "@builderbot/bot";
 
 export const invalidFlow = addKeyword(EVENTS.ACTION).addAnswer(
   "❌ Opcion invalida",

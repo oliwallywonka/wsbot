@@ -1,13 +1,5 @@
 import "dotenv/config";
 
-import {
-  MemoryDB,
-  createBot,
-  createFlow,
-  createProvider,
-} from "@bot-whatsapp/bot";
-import { BaileysProvider, handleCtx } from "@bot-whatsapp/provider-baileys";
-
 import { PORT } from "./config/config";
 import { getCardIDFlow } from "./flows/getCardIDFlow";
 import { invalidFlow } from "./flows/invalidFlow";
@@ -15,68 +7,23 @@ import { menuFlow } from "./flows/menu.flow";
 import { sendDocumentFlow } from "./flows/sendDocumentFlow";
 import { getMothsFlow } from "./flows/getMonthsFlow";
 
-import { WSTask, InMemoryQueue } from "./classes/WSTask";
-
-const wsQueue = new InMemoryQueue<void>();
+import { messageHandler } from "./handlers/message";
+import { sendMessagesHandler } from "./handlers/sendMessages";
+import { statusHandler } from "./handlers/status";
+import { stopHandler } from "./handlers/stop";
+import { uploadFile } from "./middlewares/fileMiddleware";
+import {
+  createBot,
+  createFlow,
+  createProvider,
+  MemoryDB,
+} from "@builderbot/bot";
+import { BaileysProvider } from "@builderbot/provider-baileys";
 
 const main = async () => {
-  const wSTask = WSTask.instance();
-
   const provider = createProvider(BaileysProvider);
-  provider.initHttpServer(PORT);
 
-  provider.http?.server.post(
-    "sendMessages",
-    handleCtx(async (bot, req, res) => {
-      const { messages }: { messages: string[] | undefined } = req.body;
-      try {
-        if (wsQueue.getActiveCount() > 0) {
-          return res.end("Ya existen mensajes en cola.");
-        }
-        await wSTask.getData();
-        for (const data of wSTask.data) {
-          wsQueue.add(async () => {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            for (const message of messages || []) {
-              await bot.sendMessage(
-                data.phone,
-                message.replace("{{link}}", data.linkURL),
-                {}
-              );
-            }
-            return;
-          });
-        }
-        res.end("Mensajes añadidos a la cola");
-      } catch (error) {
-        console.log(error);
-        res.end("Error en el servidor");
-      }
-    })
-  );
-
-  provider.http?.server.get(
-    "status",
-    handleCtx(async (bot, req, res) => {
-      try {
-        const jobs = wsQueue.getActiveCount();
-        res.end(`Mensajes en cola ${String(jobs)}`);
-      } catch (error) {
-        console.error("Error obteniendo el estado de los trabajos:", error);
-        res.end("Error obteniendo el estado de los trabajos");
-      }
-    })
-  );
-
-  provider.http?.server.post(
-    "stop",
-    handleCtx(async (bot, req, res) => {
-      wsQueue.stopActiveTask();
-      res.end("tareas eliminadas exitosamente");
-    })
-  );
-
-  await createBot({
+  const { httpServer, handleCtx } = await createBot({
     flow: createFlow([
       menuFlow,
       invalidFlow,
@@ -87,6 +34,15 @@ const main = async () => {
     database: new MemoryDB(),
     provider: provider,
   });
+
+  httpServer(PORT);
+
+  provider.server.post("/message", uploadFile.single("file"), handleCtx(messageHandler));
+
+  // QUEUE WS ROUTES
+  provider.server.get("/status", handleCtx(statusHandler));
+  provider.server.post("/sendMessages", uploadFile.single("file"), handleCtx(sendMessagesHandler));
+  provider.server.post("/stop", handleCtx(stopHandler));
 };
 
 main();

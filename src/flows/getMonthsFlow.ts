@@ -1,4 +1,5 @@
-import { EVENTS, addKeyword } from "@bot-whatsapp/bot";
+import { addKeyword, EVENTS } from "@builderbot/bot";
+
 import axios from "axios";
 import fs from "fs/promises";
 import { join } from "path";

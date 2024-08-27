@@ -39,7 +39,7 @@ export const sendMessagesHandler = async (bot: Bot, req: any, res: any) => {
       wsQueue.add(async () => {
 
         // 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
         for (let index = 0; index < parsedMessages.length; index++) {
           if (index === 0) {

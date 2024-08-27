@@ -18,7 +18,7 @@ interface Data {
   linkURL: string;
 }
 
-const URL = "http://177.222.106.83:86/api/survey";
+const URL = "http://190.171.225.68/api/survey";
 export async function getAllUsers(): Promise<Data[]> {
   try {
     return await axios

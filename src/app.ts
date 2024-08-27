@@ -5,7 +5,7 @@ import { getCardIDFlow } from "./flows/getCardIDFlow";
 import { invalidFlow } from "./flows/invalidFlow";
 import { menuFlow } from "./flows/menu.flow";
 import { sendDocumentFlow } from "./flows/sendDocumentFlow";
-import { getMothsFlow } from "./flows/getMonthsFlow";
+import { getMonthsFlow } from "./flows/getMonthsFlow";
 
 import { messageHandler } from "./handlers/message";
 import { sendMessagesHandler } from "./handlers/sendMessages";
@@ -19,6 +19,7 @@ import {
   MemoryDB,
 } from "@builderbot/bot";
 import { BaileysProvider } from "@builderbot/provider-baileys";
+import './services/cronScheduler'; // Ajusta la ruta según donde colocaste el archivo
 
 const main = async () => {
   const provider = createProvider(BaileysProvider);
@@ -29,7 +30,7 @@ const main = async () => {
       invalidFlow,
       getCardIDFlow,
       sendDocumentFlow,
-      getMothsFlow,
+      getMonthsFlow,
     ]),
     database: new MemoryDB(),
     provider: provider,

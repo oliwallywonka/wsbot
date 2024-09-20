@@ -19,7 +19,7 @@ import {
   MemoryDB,
 } from "@builderbot/bot";
 import { BaileysProvider } from "@builderbot/provider-baileys";
-import './services/cronScheduler'; // Ajusta la ruta según donde colocaste el archivo
+import { sendPDFHandler } from "./handlers/sendPdfHandler";
 
 const main = async () => {
   const provider = createProvider(BaileysProvider);
@@ -39,6 +39,7 @@ const main = async () => {
   httpServer(PORT);
 
   provider.server.post("/message", uploadFile.single("file"), handleCtx(messageHandler));
+  provider.server.post("/sendPDF", handleCtx(sendPDFHandler));
 
   // QUEUE WS ROUTES
   provider.server.get("/status", handleCtx(statusHandler));

@@ -1,4 +1,4 @@
-import { EVENTS, addKeyword } from "@bot-whatsapp/bot";
+import { EVENTS, addKeyword } from "@builderbot/bot";
 import { getCardIDFlow } from "./getCardIDFlow";
 import { invalidFlow } from "./invalidFlow";
 import { sendDocumentFlow } from "./sendDocumentFlow";

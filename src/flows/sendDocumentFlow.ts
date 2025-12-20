@@ -1,5 +1,4 @@
-import { addKeyword, EVENTS } from "@bot-whatsapp/bot";
-import path from "path";
+import { addKeyword, EVENTS } from "@builderbot/bot";
 import { imageBase64 } from "./image";
 
 export const sendDocumentFlow = addKeyword(EVENTS.ACTION)

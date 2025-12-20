@@ -1,4 +1,4 @@
-import { EVENTS, addKeyword } from "@bot-whatsapp/bot";
+import { EVENTS, addKeyword } from "@builderbot/bot";
 
 function getStringDate(date: Date): string {
   return date.toLocaleDateString("es", {

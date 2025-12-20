@@ -5,11 +5,9 @@ import {
   createBot,
   createFlow,
   createProvider,
-} from "@bot-whatsapp/bot";
-import { BotContext } from "@bot-whatsapp/bot/dist/types";
-import { BaileysProvider, handleCtx } from "@bot-whatsapp/provider-baileys";
+} from "@builderbot/bot";
+ import { MetaProvider } from "@builderbot/provider-meta";
 
-import { PORT } from "./config/config";
 import { getCardIDFlow } from "./flows/getCardIDFlow";
 import { invalidFlow } from "./flows/invalidFlow";
 import { menuFlow } from "./flows/menu.flow";
@@ -18,29 +16,21 @@ import { getMothsFlow } from "./flows/getMonthsFlow";
 
 
 const main = async () => {
-  const provider = createProvider(BaileysProvider);
-  provider.initHttpServer(PORT);
-
-  provider.http?.server.get(
-    "healt-check",
-    handleCtx(async (bot, req, res) => {
-      try {
-        res.end("El servidor esta operativo ✅");
-      } catch (error) {
-        console.log(error);
-      }
-    })
-  );
-
-  provider.on("message", (ctx: BotContext) => {
-    //console.log(ctx.body)
+  const provider = createProvider(MetaProvider, {
+    jwtToken: 'EAAQNSyNmZBOsBQCIYe5hZAqZC0dfv03TT6s4rOPHRia1nkctePwbBtAgOPhZBRZCrlT2QX4KLvoO4EFKdcemk51arADjEp4IbgH8dfwCJummwWns6rYZCOQgGECxDfeD5fp9vcb0hw9oHSCeHBFb7EnG3wlQgQWwIHqrJGC73TwmDNmmVgehYpMbROIFlBJsoSmsSbY85HZCG18yGFk1rUYS27UicSxJ519PzQHtCnVNBIrwUTbfeTe8JqmGe70MV3FdlD8qewhQ1coK4FDKiffaOGG',
+    numberId: '970600996127515',
+    verifyToken: '123',
+    version: 'v24.0',    
   });
 
-  await createBot({
+  const { httpServer } = await createBot({
     flow: createFlow([menuFlow, invalidFlow, getCardIDFlow, sendDocumentFlow, getMothsFlow]),
     database: new MemoryDB(),
     provider: provider,
   });
+
+  httpServer(3000);
+
 };
 
 main();
